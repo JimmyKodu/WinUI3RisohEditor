@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "WinUI3RisohEditor (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "WinUI3RisohEditor (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
