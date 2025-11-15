@@ -7,13 +7,151 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Title="WinUI3RisohEditor">
+    Title="Risoh Editor - WinUI3">
 
     <Window.SystemBackdrop>
         <MicaBackdrop />
     </Window.SystemBackdrop>
 
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
 
+        <!-- Menu Bar -->
+        <MenuBar Grid.Row="0">
+            <MenuBarItem Title="File">
+                <MenuFlyoutItem Text="New" Click="NewFile_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="N"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Open..." Click="OpenFile_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="O"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Save" Click="SaveFile_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="S"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Save As..." Click="SaveFileAs_Click"/>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Exit" Click="Exit_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Menu" Key="F4"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+            <MenuBarItem Title="Edit">
+                <MenuFlyoutItem Text="Add Resource..." Click="AddResource_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Modifiers="Control" Key="A"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutItem Text="Delete Resource" Click="DeleteResource_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Delete"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+                <MenuFlyoutSeparator/>
+                <MenuFlyoutItem Text="Edit Resource..." Click="EditResource_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="Enter"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+            <MenuBarItem Title="View">
+                <MenuFlyoutItem Text="Refresh" Click="Refresh_Click">
+                    <MenuFlyoutItem.KeyboardAccelerators>
+                        <KeyboardAccelerator Key="F5"/>
+                    </MenuFlyoutItem.KeyboardAccelerators>
+                </MenuFlyoutItem>
+            </MenuBarItem>
+            <MenuBarItem Title="Help">
+                <MenuFlyoutItem Text="About" Click="About_Click"/>
+            </MenuBarItem>
+        </MenuBar>
+
+        <!-- Toolbar -->
+        <CommandBar Grid.Row="1" DefaultLabelPosition="Right">
+            <AppBarButton Icon="NewWindow" Label="New" Click="NewFile_Click"/>
+            <AppBarButton Icon="OpenFile" Label="Open" Click="OpenFile_Click"/>
+            <AppBarButton Icon="Save" Label="Save" Click="SaveFile_Click"/>
+            <AppBarSeparator/>
+            <AppBarButton Icon="Add" Label="Add Resource" Click="AddResource_Click"/>
+            <AppBarButton Icon="Delete" Label="Delete" Click="DeleteResource_Click"/>
+            <AppBarButton Icon="Edit" Label="Edit" Click="EditResource_Click"/>
+            <AppBarSeparator/>
+            <AppBarButton Icon="Refresh" Label="Refresh" Click="Refresh_Click"/>
+        </CommandBar>
+
+        <!-- Main Content Area -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="300" MinWidth="200"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Resource Tree View -->
+            <Grid Grid.Column="0" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,0,1,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" Text="Resources" FontWeight="SemiBold" Margin="12,8,12,8"/>
+                
+                <TreeView Grid.Row="1" x:Name="ResourceTreeView" SelectionMode="Single" SelectionChanged="ResourceTreeView_SelectionChanged">
+                    <TreeView.ItemTemplate>
+                        <DataTemplate>
+                            <TreeViewItem ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <FontIcon Glyph="{Binding Icon}" FontSize="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding Name}"/>
+                                </StackPanel>
+                            </TreeViewItem>
+                        </DataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </Grid>
+
+            <!-- Splitter -->
+            <Border Grid.Column="1" Width="4" Background="Transparent" Cursor="SizeWestEast"/>
+
+            <!-- Resource Editor/Preview Area -->
+            <Grid Grid.Column="2" Padding="12">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Grid.Row="0" x:Name="ResourceTitleText" Text="No resource selected" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                
+                <ScrollViewer Grid.Row="1" x:Name="ResourceContentArea">
+                    <StackPanel x:Name="ResourceContent">
+                        <TextBlock Text="Select a resource from the tree to view or edit it." 
+                                   Foreground="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"
+                                   TextWrapping="Wrap"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </Grid>
+
+        <!-- Status Bar -->
+        <Grid Grid.Row="3" Height="32" BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}" BorderThickness="0,1,0,0" Padding="12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            
+            <TextBlock Grid.Column="0" x:Name="StatusText" Text="Ready" VerticalAlignment="Center"/>
+            <TextBlock Grid.Column="1" x:Name="FilePathText" Text="" VerticalAlignment="Center" Foreground="{ThemeResource SystemControlDisabledBaseMediumLowBrush}"/>
+        </Grid>
     </Grid>
 </Window>
