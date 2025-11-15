@@ -360,69 +360,102 @@ namespace WinUI3RisohEditor
 
         public static async System.Threading.Tasks.Task<ResourceFile> LoadAsync(string path)
         {
-            // Placeholder implementation - actual loading would parse RC/RES/EXE/DLL files
             var file = new ResourceFile();
-            
-            // Add sample resources for demonstration
-            file.Resources.Add(new ResourceNode
+            var extension = Path.GetExtension(path).ToLowerInvariant();
+
+            await System.Threading.Tasks.Task.Run(() =>
             {
-                Type = "DIALOG",
-                Name = "IDD_ABOUTBOX",
-                Content = "DIALOG 0, 0, 200, 100\nCAPTION \"About\"\n{\n    // Dialog content\n}"
-            });
-            
-            file.Resources.Add(new ResourceNode
-            {
-                Type = "MENU",
-                Name = "IDR_MAINMENU",
-                Content = "MENU\n{\n    POPUP \"&File\"\n    {\n        MENUITEM \"&Exit\", ID_FILE_EXIT\n    }\n}"
-            });
-            
-            file.Resources.Add(new ResourceNode
-            {
-                Type = "STRING",
-                Name = "IDS_APP_TITLE",
-                Content = "\"Application Title\""
+                try
+                {
+                    if (extension == ".rc")
+                    {
+                        // Load and parse RC file
+                        var content = File.ReadAllText(path);
+                        var parsedResources = ResourceParsers.RCParser.Parse(content);
+                        foreach (var resource in parsedResources)
+                        {
+                            file.Resources.Add(resource);
+                        }
+                    }
+                    else if (extension == ".exe" || extension == ".dll")
+                    {
+                        // Parse PE file
+                        var parsedResources = ResourceParsers.PEParser.Parse(path);
+                        foreach (var resource in parsedResources)
+                        {
+                            file.Resources.Add(resource);
+                        }
+                    }
+                    else if (extension == ".res")
+                    {
+                        // RES files would require binary parsing
+                        file.Resources.Add(new ResourceNode
+                        {
+                            Type = "INFO",
+                            Name = "Not Implemented",
+                            Content = ".RES file format parsing is not yet implemented.\n\nRES files contain compiled binary resources.\nSupport for this format will be added in future versions."
+                        });
+                    }
+                    else
+                    {
+                        // Unknown format - add sample resources
+                        file.Resources.Add(new ResourceNode
+                        {
+                            Type = "DIALOG",
+                            Name = "IDD_ABOUTBOX",
+                            Content = "IDD_ABOUTBOX DIALOG 0, 0, 200, 100\nCAPTION \"About\"\nFONT 8, \"MS Shell Dlg\"\n{\n    DEFPUSHBUTTON \"OK\", IDOK, 75, 80, 50, 14\n    LTEXT \"Sample Dialog\", IDC_STATIC, 10, 10, 180, 60\n}"
+                        });
+                        
+                        file.Resources.Add(new ResourceNode
+                        {
+                            Type = "MENU",
+                            Name = "IDR_MAINMENU",
+                            Content = "IDR_MAINMENU MENU\n{\n    POPUP \"&File\"\n    {\n        MENUITEM \"&New\\tCtrl+N\", ID_FILE_NEW\n        MENUITEM \"&Open...\\tCtrl+O\", ID_FILE_OPEN\n        MENUITEM \"&Save\\tCtrl+S\", ID_FILE_SAVE\n        MENUITEM SEPARATOR\n        MENUITEM \"E&xit\", ID_FILE_EXIT\n    }\n    POPUP \"&Edit\"\n    {\n        MENUITEM \"&Undo\\tCtrl+Z\", ID_EDIT_UNDO\n        MENUITEM \"&Redo\\tCtrl+Y\", ID_EDIT_REDO\n    }\n}"
+                        });
+                        
+                        file.Resources.Add(new ResourceNode
+                        {
+                            Type = "STRINGTABLE",
+                            Name = "Strings",
+                            Content = "STRINGTABLE\n{\n    IDS_APP_TITLE \"Sample Application\"\n    IDS_HELLO \"Hello, World!\"\n    IDS_ERROR \"An error occurred\"\n}"
+                        });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    file.Resources.Add(new ResourceNode
+                    {
+                        Type = "ERROR",
+                        Name = "Load Error",
+                        Content = $"Failed to load file: {ex.Message}\n\nStack trace:\n{ex.StackTrace}"
+                    });
+                }
             });
 
-            await System.Threading.Tasks.Task.CompletedTask;
             return file;
         }
 
         public async System.Threading.Tasks.Task SaveAsync(string path)
         {
-            // Placeholder implementation - actual saving would generate RC/RES files
             var extension = Path.GetExtension(path).ToLowerInvariant();
             
-            if (extension == ".rc")
+            await System.Threading.Tasks.Task.Run(() =>
             {
-                // Generate RC file format
-                var content = GenerateRCContent();
-                await File.WriteAllTextAsync(path, content);
-            }
-            else
-            {
-                throw new NotSupportedException($"File format '{extension}' is not yet supported for saving.");
-            }
-        }
-
-        private string GenerateRCContent()
-        {
-            var sb = new System.Text.StringBuilder();
-            sb.AppendLine("// Resource script generated by RisohEditor");
-            sb.AppendLine();
-
-            foreach (var resource in Resources.GroupBy(r => r.Type))
-            {
-                sb.AppendLine($"// {resource.Key} resources");
-                foreach (var item in resource)
+                if (extension == ".rc")
                 {
-                    sb.AppendLine(item.Content ?? string.Empty);
-                    sb.AppendLine();
+                    // Generate RC file format using the parser
+                    var content = ResourceParsers.RCParser.Generate(Resources);
+                    File.WriteAllText(path, content);
                 }
-            }
-
-            return sb.ToString();
+                else if (extension == ".res")
+                {
+                    throw new NotSupportedException(".RES file format saving is not yet implemented.\n\nRES files require binary resource compilation.");
+                }
+                else
+                {
+                    throw new NotSupportedException($"File format '{extension}' is not supported for saving.\n\nSupported formats: .rc");
+                }
+            });
         }
     }
 
