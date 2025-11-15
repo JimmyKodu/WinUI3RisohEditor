@@ -1,0 +1,194 @@
+// Sample Resource Script File
+// This file demonstrates the RC format supported by RisohEditor
+
+#include "resource.h"
+
+////////////////////////////////////////////////////////////////////////////
+// Dialog resources
+
+IDD_ABOUTBOX DIALOG 0, 0, 250, 150
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Sample Application"
+FONT 8, "MS Shell Dlg"
+{
+    ICON IDI_APPICON, IDC_STATIC, 10, 10, 20, 20
+    LTEXT "Sample Application", IDC_STATIC, 40, 10, 200, 8
+    LTEXT "Version 1.0", IDC_STATIC, 40, 25, 200, 8
+    LTEXT "Copyright (C) 2025", IDC_STATIC, 40, 40, 200, 8
+    LTEXT "This is a sample resource file for testing RisohEditor.", IDC_STATIC, 10, 60, 230, 20
+    DEFPUSHBUTTON "OK", IDOK, 100, 130, 50, 14
+}
+
+IDD_MAIN_DIALOG DIALOGEX 0, 0, 300, 200
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Main Dialog"
+FONT 8, "MS Shell Dlg", 0, 0, 0x1
+{
+    LTEXT "Name:", IDC_STATIC, 10, 10, 50, 8
+    EDITTEXT IDC_EDIT_NAME, 70, 8, 220, 14, ES_AUTOHSCROLL
+    
+    LTEXT "Description:", IDC_STATIC, 10, 30, 50, 8
+    EDITTEXT IDC_EDIT_DESC, 70, 28, 220, 60, ES_MULTILINE | ES_AUTOVSCROLL | WS_VSCROLL
+    
+    GROUPBOX "Options", IDC_STATIC, 10, 95, 280, 60
+    CONTROL "Enable feature A", IDC_CHECK_FEATURE_A, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 110, 100, 10
+    CONTROL "Enable feature B", IDC_CHECK_FEATURE_B, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 125, 100, 10
+    CONTROL "Enable feature C", IDC_CHECK_FEATURE_C, "Button", BS_AUTOCHECKBOX | WS_TABSTOP, 20, 140, 100, 10
+    
+    DEFPUSHBUTTON "OK", IDOK, 135, 180, 50, 14
+    PUSHBUTTON "Cancel", IDCANCEL, 190, 180, 50, 14
+    PUSHBUTTON "Help", IDHELP, 245, 180, 50, 14
+}
+
+////////////////////////////////////////////////////////////////////////////
+// Menu resources
+
+IDR_MAINMENU MENU
+{
+    POPUP "&File"
+    {
+        MENUITEM "&New\tCtrl+N", ID_FILE_NEW
+        MENUITEM "&Open...\tCtrl+O", ID_FILE_OPEN
+        MENUITEM "&Save\tCtrl+S", ID_FILE_SAVE
+        MENUITEM "Save &As...", ID_FILE_SAVEAS
+        MENUITEM SEPARATOR
+        MENUITEM "Recent Files", ID_FILE_RECENT
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit", ID_FILE_EXIT
+    }
+    POPUP "&Edit"
+    {
+        MENUITEM "&Undo\tCtrl+Z", ID_EDIT_UNDO
+        MENUITEM "&Redo\tCtrl+Y", ID_EDIT_REDO
+        MENUITEM SEPARATOR
+        MENUITEM "Cu&t\tCtrl+X", ID_EDIT_CUT
+        MENUITEM "&Copy\tCtrl+C", ID_EDIT_COPY
+        MENUITEM "&Paste\tCtrl+V", ID_EDIT_PASTE
+        MENUITEM "&Delete\tDel", ID_EDIT_DELETE
+        MENUITEM SEPARATOR
+        MENUITEM "Select &All\tCtrl+A", ID_EDIT_SELECTALL
+    }
+    POPUP "&View"
+    {
+        MENUITEM "&Toolbar", ID_VIEW_TOOLBAR
+        MENUITEM "&Status Bar", ID_VIEW_STATUSBAR
+        MENUITEM SEPARATOR
+        POPUP "&Zoom"
+        {
+            MENUITEM "Zoom &In\tCtrl++", ID_VIEW_ZOOMIN
+            MENUITEM "Zoom &Out\tCtrl+-", ID_VIEW_ZOOMOUT
+            MENUITEM "&Reset Zoom\tCtrl+0", ID_VIEW_ZOOMRESET
+        }
+    }
+    POPUP "&Help"
+    {
+        MENUITEM "&Help Topics\tF1", ID_HELP_TOPICS
+        MENUITEM SEPARATOR
+        MENUITEM "&About", ID_HELP_ABOUT
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////
+// Accelerator table
+
+IDR_ACCELERATORS ACCELERATORS
+{
+    "N", ID_FILE_NEW, VIRTKEY, CONTROL
+    "O", ID_FILE_OPEN, VIRTKEY, CONTROL
+    "S", ID_FILE_SAVE, VIRTKEY, CONTROL
+    "Z", ID_EDIT_UNDO, VIRTKEY, CONTROL
+    "Y", ID_EDIT_REDO, VIRTKEY, CONTROL
+    "X", ID_EDIT_CUT, VIRTKEY, CONTROL
+    "C", ID_EDIT_COPY, VIRTKEY, CONTROL
+    "V", ID_EDIT_PASTE, VIRTKEY, CONTROL
+    "A", ID_EDIT_SELECTALL, VIRTKEY, CONTROL
+    VK_F1, ID_HELP_TOPICS, VIRTKEY
+    VK_DELETE, ID_EDIT_DELETE, VIRTKEY
+}
+
+////////////////////////////////////////////////////////////////////////////
+// String Table
+
+STRINGTABLE
+{
+    IDS_APP_TITLE "Sample Application"
+    IDS_MAIN_WINDOW "Main Window"
+}
+
+STRINGTABLE
+{
+    IDS_FILE_NEW "Create a new document"
+    IDS_FILE_OPEN "Open an existing document"
+    IDS_FILE_SAVE "Save the current document"
+    IDS_FILE_SAVEAS "Save the current document with a new name"
+    IDS_FILE_EXIT "Exit the application"
+}
+
+STRINGTABLE
+{
+    IDS_EDIT_UNDO "Undo the last action"
+    IDS_EDIT_REDO "Redo the previously undone action"
+    IDS_EDIT_CUT "Cut the selection"
+    IDS_EDIT_COPY "Copy the selection"
+    IDS_EDIT_PASTE "Paste from clipboard"
+    IDS_EDIT_DELETE "Delete the selection"
+}
+
+STRINGTABLE
+{
+    IDS_SUCCESS "Operation completed successfully"
+    IDS_ERROR "An error occurred"
+    IDS_WARNING "Warning: Please check your input"
+    IDS_CONFIRM "Are you sure you want to continue?"
+}
+
+////////////////////////////////////////////////////////////////////////////
+// Icon and Bitmap resources (file references)
+
+IDI_APPICON ICON "app.ico"
+IDI_DOCUMENT ICON "document.ico"
+IDI_FOLDER ICON "folder.ico"
+
+IDB_TOOLBAR BITMAP "toolbar.bmp"
+IDB_SPLASH BITMAP "splash.bmp"
+
+////////////////////////////////////////////////////////////////////////////
+// Version Information
+
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,0,0,0
+PRODUCTVERSION 1,0,0,0
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS 0x40004L
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+{
+    BLOCK "StringFileInfo"
+    {
+        BLOCK "040904b0"
+        {
+            VALUE "CompanyName", "Sample Company"
+            VALUE "FileDescription", "Sample Application"
+            VALUE "FileVersion", "1.0.0.0"
+            VALUE "InternalName", "SampleApp"
+            VALUE "LegalCopyright", "Copyright (C) 2025"
+            VALUE "OriginalFilename", "SampleApp.exe"
+            VALUE "ProductName", "Sample Product"
+            VALUE "ProductVersion", "1.0.0.0"
+        }
+    }
+    BLOCK "VarFileInfo"
+    {
+        VALUE "Translation", 0x409, 1200
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////
+// Custom resources
+
+IDR_CUSTOM_DATA RCDATA
+{
+    0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F,
+    0x72, 0x6C, 0x64, 0x21, 0x00
+}
